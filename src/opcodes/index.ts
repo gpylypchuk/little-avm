@@ -1,3 +1,5 @@
+import { bigIntToBuffer } from "@ethereumjs/util";
+import { bufferToBigInt, setLengthLeft } from "@ethereumjs/util/dist/bytes";
 import { arrayify, hexlify } from "@ethersproject/bytes";
 import ExecutionContext from "../classes/execution";
 import Instruction from "../classes/instruction";
@@ -75,10 +77,23 @@ const Opcodes: {
   0x50: new Instruction(0x50, "POP", (ctx: ExecutionContext) => {
     ctx.stack.pop()
   }),
-  0x51: new Instruction(0x51, "MLOAD"),
-  0x52: new Instruction(0x52, "MSTORE"),
-  0x54: new Instruction(0x54, "SLOAD"),
-  0x55: new Instruction(0x55, "SSTORE"),
+  0x51: new Instruction(0x51, "MLOAD", (ctx: ExecutionContext) => {
+    const offset = ctx.stack.pop();
+    ctx.stack.push(ctx.memory.load(offset))
+  }),
+  0x52: new Instruction(0x52, "MSTORE", (ctx: ExecutionContext) => {
+    const [offset, value] = [ctx.stack.pop(), ctx.stack.pop()]
+    ctx.memory.store(offset, value);
+  }),
+  0x54: new Instruction(0x54, "SLOAD", async (ctx: ExecutionContext) => {
+    const key = ctx.stack.pop()
+    const value = await ctx.storage.get(bigIntToBuffer(key))
+    ctx.stack.push(value ? bufferToBigInt(value) : BigInt(0))
+  }),
+  0x55: new Instruction(0x55, "SSTORE", async (ctx: ExecutionContext) => {
+    const [key, value] = [ctx.stack.pop(), ctx.stack.pop()]
+    await ctx.storage.put(setLengthLeft(bigIntToBuffer(key), 32), bigIntToBuffer(value))
+  }),
   0x56: new Instruction(0x56, "JUMP"),
   0x57: new Instruction(0x57, "JUMPI"),
   0x5b: new Instruction(0x5b, "JUMPDEST"),
