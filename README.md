@@ -10,4 +10,4 @@
 | 03  | 3 |
 | 0A  | EXP |
 
-- Should return you 27 (1B)
+- STACK = 27 (1B)
