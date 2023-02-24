@@ -1,7 +1,7 @@
 import Memory from "../memory";
 import Stack from "../stack";
 import { isHexString, arrayify, hexlify } from "@ethersproject/bytes";
-import { InvalidByteCode, InvalidProgramCounterIndex, UnknownOpcode } from "./errors";
+import { InvalidByteCode, InvalidJump, InvalidProgramCounterIndex, UnknownOpcode } from "./errors";
 import Instruction from "../instruction";
 import Opcodes from "../../opcodes";
 import { Trie } from "@ethereumjs/trie";
@@ -74,6 +74,16 @@ class ExecutionContext {
         this.pc += bytes;
 
         return values;
+    }
+
+    public jump(destination: bigint): void {
+        if(!this.isValidJump(destination)) throw new InvalidJump();
+        this.pc = Number(destination);
+    }
+
+    private isValidJump(destination: bigint): boolean {
+        //JUMPDEST
+        return this.code[Number(destination) - 1] === Opcodes[0x5b].opcode;
     }
 }
 

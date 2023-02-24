@@ -1,13 +1,13 @@
 # Little AVM
 
-### Test 🎸
+### Test
 ```yarn dev 0x600360030A```
 | BYTECODE  | OPCODE |
 | ------------- | ------------- |
-| 60  | PUSH1  |
+| 60  | pushint uint  |
 | 03  | 3 |
-| 60  | PUSH1 |
+| 60  | pushint uint |
 | 03  | 3 |
-| 0A  | EXP |
+| 0A  | exp |
 
 - STACK = 27 (1B)
