@@ -8,6 +8,7 @@ import { Trie } from "@ethereumjs/trie";
 
 class ExecutionContext {
     private readonly code: Uint8Array;
+    public readonly originalStorage: Trie;
     public stack: Stack;
     public memory: Memory;
     private pc: number;
@@ -30,6 +31,7 @@ class ExecutionContext {
         this.stopped = false;
         this.storage = storage;
         this.gas = gas;
+        this.originalStorage = storage.copy()
     }
 
     public stop(): void {
