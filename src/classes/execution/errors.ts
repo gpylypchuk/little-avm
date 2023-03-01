@@ -6,4 +6,12 @@ class UnknownOpcode extends Error {}
 
 class InvalidJump extends Error {}
 
-export { InvalidByteCode, InvalidProgramCounterIndex, UnknownOpcode, InvalidJump }
+class OutOfGas extends Error {}
+
+export { 
+    InvalidByteCode, 
+    InvalidProgramCounterIndex, 
+    UnknownOpcode, 
+    InvalidJump, 
+    OutOfGas
+}
